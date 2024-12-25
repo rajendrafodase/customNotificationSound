@@ -50,10 +50,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _notificationCount = 0;
 
   @override
   void initState() {
     FirebaseAPI().initNotification();
+    _loadNotificationCount();
     super.initState();
   }
 
@@ -64,11 +66,62 @@ class _MyHomePageState extends State<MyHomePage> {
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
       FirebaseAPI().getNotification(state);
+
     }
   }
+  void _loadNotificationCount() async {
+    int count = await FirebaseAPI().fetchNotificationCount();
+    setState(() {
+      _notificationCount = count;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home Page'),
+        actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: Icon(Icons.notifications),
+                onPressed: () {
+                  // Navigate to notifications screen
+                },
+              ),
+              if (_notificationCount > 0)
+                Positioned(
+                  right: 11,
+                  top: 11,
+                  child: Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    constraints: BoxConstraints(
+                      minWidth: 14,
+                      minHeight: 14,
+                    ),
+                    child: Text(
+                      '$_notificationCount',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 8,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+      body: Center(
+        child: Text('Welcome to the Home Page!'),
+      ),
+    );
   }
 }
 

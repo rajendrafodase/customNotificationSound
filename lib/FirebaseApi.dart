@@ -110,6 +110,10 @@ class FirebaseAPI{
     });
 
   }
+  Future<int> fetchNotificationCount() async {
+    await Future.delayed(Duration(seconds: 1)); // Simulating network delay
+    return 5; // Example count
+  }
 
   void getNotification([AppLifecycleState? state]) async {
     print('Lifecycle state: $state');
